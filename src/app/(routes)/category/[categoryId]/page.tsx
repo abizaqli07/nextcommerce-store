@@ -6,7 +6,10 @@ import getProducts from "@/actions/get_products";
 import getSizes from "@/actions/get_sizes";
 import Billboard from "@/components/billboard";
 import Container from "@/components/ui/container";
+import NoResult from "@/components/ui/no_result";
 import { FC } from "react";
+import Filter from "./components/filter";
+import ProductCard from "@/components/ui/product_card";
 
 interface CategoryPageProps {
   params: {
@@ -42,7 +45,24 @@ const CategoryPage: FC<CategoryPageProps> = async ({
           <div className=" lg:grid lg:grid-cols-5 lg:gap-x-8">
             {/* Add Mobile filters */}
             <div className=" hidden lg:block">
-              {/* todo : Filter */}
+              <Filter
+                valueKey="sizeId"
+                name="Sizes"
+                data={sizes}
+              />
+              <Filter
+                valueKey="colorId"
+                name="Colors"
+                data={colors}
+              />
+            </div>
+            <div className=" mt-6 lg:col-span-4 lg:mt-0">
+              {products.length === 0 && <NoResult />}
+              <div className=" grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                {products.map((data) => (
+                  <ProductCard key={data.id} data={data} />
+                ))}
+              </div>
             </div>
           </div>
         </div>
