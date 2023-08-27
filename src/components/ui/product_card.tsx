@@ -2,11 +2,13 @@
 
 import { Button } from "@/components/ui/button"
 import Currency from "@/components/ui/currency"
+import useCart from "@/hooks/use_cart"
+import usePreviewModal from "@/hooks/use_preview_modal"
 import { Product } from "@/types"
 import { Expand, ShoppingCart } from "lucide-react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
-import { FC } from "react"
+import { FC, MouseEventHandler } from "react"
 
 interface ProductCardProps {
   data: Product
@@ -15,9 +17,24 @@ interface ProductCardProps {
 const ProductCard: FC<ProductCardProps> = ({
   data
 }) => {
+  const previeModal = usePreviewModal()
+  const cart = useCart()
   const router = useRouter()
+
   const handleClick = () => {
     router.push(`/product/${data.id}`)
+  }
+
+  const onPreview: MouseEventHandler<HTMLButtonElement> = (event) => {
+    event.stopPropagation()
+
+    previeModal.onOpen(data)
+  }
+
+  const onAddToCart: MouseEventHandler<HTMLButtonElement> = (event) => {
+    event.stopPropagation()
+
+    cart.addItem(data)
   }
 
   return (
@@ -33,10 +50,10 @@ const ProductCard: FC<ProductCardProps> = ({
 
         <div className=" opacity-0 group-hover:opacity-100 transition absolute w-full px-6 bottom-5">
           <div className=" flex gap-x-6 justify-center">
-            <Button variant="outline" className=" rounded-full hover:scale-110 transition duration-300 ease-in-out">
+            <Button variant="outline" className=" rounded-full hover:scale-110 transition duration-300 ease-in-out" onClick={onPreview}>
               <Expand size={20} className=" text-gray-600" />
             </Button>
-            <Button variant="outline" className=" rounded-full hover:scale-110 transition duration-300 ease-in-out">
+            <Button variant="outline" className=" rounded-full hover:scale-110 transition duration-300 ease-in-out" onClick={onAddToCart}>
               <ShoppingCart size={20} className=" text-gray-600" />
             </Button>
           </div>
